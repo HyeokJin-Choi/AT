@@ -45,7 +45,7 @@ redisClient.on('end', () => {
 });
 redisClient.on('error', (err) => {
   console.error('Redis 에러 발생:', err);
-});
+}); 
 
 (async () => {
   try {
