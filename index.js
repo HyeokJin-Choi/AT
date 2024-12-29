@@ -1087,10 +1087,24 @@ app.post('/get-school-info', (req, res) => {
   console.log(req.body);
 
   const query = `
-    SELECT School.school_id, School.school_name, School.school_level, School.total_time
+    SELECT
+      School.school_id,
+      School.school_name,
+      School.school_level,
+      School.total_time,
+      School.school_local,
+      COUNT(Users.user_id) AS students
     FROM Users
     JOIN School ON Users.school_id = School.school_id
-    WHERE Users.user_id = ?;
+    WHERE Users.school_id = (
+      SELECT school_id FROM Users WHERE user_id = ?
+    )
+    GROUP BY
+      School.school_id,
+      School.school_name,
+      School.school_level,
+      School.total_time,
+      School.school_local;
   `;
 
   db.query(query, [userId], (err, results) => {
